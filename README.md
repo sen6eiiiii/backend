@@ -14,7 +14,7 @@ Project Links
 
 ### Express.js Backend App
 - **[Express.js App] GitHub Repository**: https://github.com/sen6eiiiii/backend.git
-- **[AWS/Render Express.js App]**: https://backend-d2or.onrender.com
+- **[AWS/Render Express.js App]**: https://backend-ihvl.onrender.com/
 
 ## API Endpoints
 
@@ -88,6 +88,4 @@ Visit: https://backend-d2or.onrender.com/lessons
 ## How to Run Locally
 
 ### Frontend
-```bash
-cd frontend
-# Open index.html in browser or use live server
+ use live server  after used npm start on terminal

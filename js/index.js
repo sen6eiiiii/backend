@@ -15,11 +15,7 @@ var ObjectId = mongodb.ObjectId;
 var app = express();
 app.use(express.json());
 
-<<<<<<< HEAD
 // Static assets 
-=======
-// Static assets - CORRECTED PATHS
->>>>>>> 8cd100590e8454f69666e5b4b641b1bf00dc961a
 app.use('/assets', express.static(path.join(__dirname, '../assets')));
 app.use('/images', express.static(path.join(__dirname, '../assets/images')));
 
@@ -32,11 +28,7 @@ app.use(function (req, res, next) {
 });
 
 // =====================================
-<<<<<<< HEAD
 // MongoDB Atlas Connection 
-=======
-// MongoDB Atlas Connection - CORRECTED WITH YOUR DETAILS
->>>>>>> 8cd100590e8454f69666e5b4b641b1bf00dc961a
 // =====================================
 var connectionURI = "mongodb+srv://lessons:Clashofclans15@cluster1.5dpttrc.mongodb.net/backendlibrary?retryWrites=true&w=majority&appName=Cluster1";
 var client = new MongoClient(connectionURI);
@@ -114,11 +106,7 @@ app.use(function (req, res, next) {
 });
 
 // =====================================
-<<<<<<< HEAD
 // ROUTES 
-=======
-// ROUTES (Keep all your existing routes exactly as they were)
->>>>>>> 8cd100590e8454f69666e5b4b641b1bf00dc961a
 // =====================================
 
 // Get all lessons
@@ -233,11 +221,7 @@ app.post("/orders", async function (req, res) {
     for (var i = 0; i < lessonIDs.length; i++) {
       var lessonId = lessonIDs[i];
       try {
-<<<<<<< HEAD
         // Find lesson by numeric ID 
-=======
-        // Find lesson by numeric ID (since your frontend uses numeric IDs)
->>>>>>> 8cd100590e8454f69666e5b4b641b1bf00dc961a
         var lesson = await db.collection("lessons").findOne({ id: lessonId });
         
         if (lesson) {
@@ -302,19 +286,14 @@ app.get("/orders", async function (req, res) {
   }
 });
 
-<<<<<<< HEAD
 
 // PUT: Update any lesson attribute
-=======
-// PUT: Update lesson spaces
->>>>>>> 8cd100590e8454f69666e5b4b641b1bf00dc961a
 app.put("/lessons/:id", async function (req, res) {
   try {
     if (!db) {
       return res.status(500).json({ error: "Database not connected" });
     }
 
-<<<<<<< HEAD
     var lessonId = parseInt(req.params.id); 
     var updateData = req.body;
 
@@ -328,46 +307,26 @@ app.put("/lessons/:id", async function (req, res) {
     var result = await db.collection("lessons").updateOne(
       { id: lessonId }, 
       { $set: updateData }
-=======
-    var lessonId = parseInt(req.params.id); // Parse as number for your numeric IDs
-    var spaces = req.body.spaces;
-
-    if (spaces === undefined) {
-      return res.status(400).json({ error: "Spaces value required" });
-    }
-
-    var result = await db.collection("lessons").updateOne(
-      { id: lessonId }, // Use numeric ID instead of ObjectId
-      { $set: { spaces: spaces } }
->>>>>>> 8cd100590e8454f69666e5b4b641b1bf00dc961a
     );
 
     if (result.matchedCount === 0) {
       return res.status(404).json({ error: "Lesson not found" });
     }
 
-<<<<<<< HEAD
     res.json({ 
       success: true,
       message: "Lesson updated successfully", 
       modifiedCount: result.modifiedCount,
       updatedFields: Object.keys(updateData)
     });
-=======
-    res.json({ message: "Lesson updated", modifiedCount: result.modifiedCount });
->>>>>>> 8cd100590e8454f69666e5b4b641b1bf00dc961a
   } catch (error) {
     console.error("❌ Update error:", error);
     res.status(500).json({ error: "Failed to update lesson" });
   }
 });
 
-<<<<<<< HEAD
 
 // RESET: Reset all lesson spaces to 5 
-=======
-// RESET: Reset all lesson spaces to 5 (ADD THIS NEW ROUTE)
->>>>>>> 8cd100590e8454f69666e5b4b641b1bf00dc961a
 app.put("/reset-lessons", async function (req, res) {
   try {
     if (!db) {
@@ -442,11 +401,7 @@ app.get("/", function (req, res) {
 });
 
 // =====================================
-<<<<<<< HEAD
 // Start the server 
-=======
-// Start the server (KEEPING YOUR EXACT PORT SETUP)
->>>>>>> 8cd100590e8454f69666e5b4b641b1bf00dc961a
 // =====================================
 var PORT = 3000;
 http.createServer(app).listen(PORT, function () {

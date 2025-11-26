@@ -27,7 +27,9 @@ Project Links
 - `PUT /reset-lessons` - Reset all spaces to 5
 
 ### Test the Backend
-Visit: https://backend-d2or.onrender.com/lessons
+https://backend-8pgl.onrender.com
+https://backend-8pgl.onrender.com/lessons
+https://backend-8pgl.onrender.com/orders
 
 ## Technology Stack
 

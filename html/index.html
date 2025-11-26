@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
-<header>
+<!DOCTYPE html>
+<html lang="en">
+<head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Library App</title>
@@ -13,161 +15,180 @@
 
   <!-- External CSS -->
   <link rel="stylesheet" href="/assets/style.css" />
-</header>
+</head>
 
 <body>
   <div id="app">
-    <!-- Header -->
+
+    <!--       HEADER-->
+
     <header>
-      <div class="header-content">
-        <div class="logo">
-          <i class="fa-solid fa-book-open-reader"></i>
-          <h1>{{ sitename }}</h1>
-        </div>
-
-        <div class="search-container" v-if="showLessons">
-          <div class="search-bar">
-            <i class="fa-solid fa-magnifying-glass"></i>
-            <input
-              type="text"
-              v-model="searchQuery"
-              placeholder="Search lessons by subject, location, price..."
-            />
-            <button v-if="searchQuery" @click="clearSearch" class="clear-search">
-              <i class="fa-solid fa-times"></i>
-            </button>
-          </div>
-        </div>
-
-        <div class="cart-button">
-          <button @click="showCheckout" :disabled="cart.length === 0">
-            <i class="fa-solid fa-cart-shopping"></i>
-            <span v-if="itemsInTheCart">({{ itemsInTheCart }})</span> Checkout
-          </button>
-        </div>
+      <div class="logo">
+        <i class="fa-solid fa-book-open-reader"></i>
+        <h1>{{ sitename }}</h1>
       </div>
-      <!-- ADD THIS RESET BUTTON -->
-<div class="reset-button">
-  <button @click="resetAllSpaces">
-    <i class="fa-solid fa-rotate-right"></i> Reset Spaces
-  </button>
-</div>
 
+      <button class="checkout-btn" @click="showCheckout" :disabled="cart.length === 0">
+        <i class="fa-solid fa-cart-shopping"></i>
+        <span v-if="itemsInTheCart">({{ itemsInTheCart }})</span> Checkout
+      </button>
 
-      
+      <!-- RESET BUTTON (kept under header like lecturer examples) -->
+      <button class="reset-button" @click="resetAllSpaces">
+        <i class="fa-solid fa-rotate-right"></i> Reset Spaces
+      </button>
     </header>
 
-    <!-- Main Content -->
-    <main>
-      <!-- Sorting Controls -->
-      <div class="sorting-controls" v-if="showLessons">
-        <label>Sort by:</label>
-        <select v-model="sortBy">
-          <option value="subject">Subject</option>
-          <option value="location">Location</option>
-          <option value="price">Price</option>
-          <option value="spaces">Availability</option>
-        </select>
 
-        <label>Order:</label>
-        <select v-model="sortOrder">
-          <option value="asc">Ascending</option>
-          <option value="desc">Descending</option>
-        </select>
-      </div>
+    <!--       SEARCH BAR      -->
 
-      <!-- Search Info -->
-      <div v-if="showLessons && searchQuery" class="search-info">
-        <p>Showing {{ filteredLessons.length }} results for "{{ searchQuery }}"</p>
-      </div>
-
-      <!-- Lessons -->
-      <div v-if="showLessons">
-        <figure v-for="lesson in sortedAndFilteredLessons" :key="lesson.id">
-          <img :src="lesson.image" :alt="lesson.subject" />
-          <h1>{{ lesson.subject }}</h1>
-          <p><strong>Location:</strong> {{ lesson.location }}</p>
-          <p><strong>Price:</strong> £{{ lesson.price }}</p>
-          <p><strong>Spaces Available:</strong> {{ lesson.spaces }}</p>
-
-          <button v-if="canAddToCart(lesson.id)" @click="addItemToCart(lesson.id)">
-            <i class="fa-solid fa-cart-plus"></i> Add to Cart
-          </button>
-          <button v-else disabled>
-            <i class="fa-solid fa-ban"></i> Add to Cart
-          </button>
-
-          <button
-            @click="removeItemFromCart(lesson.id)"
-            :disabled="!canRemoveFromCart(lesson.id)"
-          >
-            <i class="fa-solid fa-trash-can"></i> Remove from Cart
-          </button>
-
-          <div v-if="!canAddToCart(lesson.id) && cart.length > 0">
-            No more spaces available for this lesson
-          </div>
-        </figure>
-      </div>
-
-      <!-- Checkout Page -->
-      <div v-else>
-        <h1>Checkout</h1>
-
-        <!-- Cart Items -->
-        <div v-if="cart.length > 0">
-          <h2>Your Selected Lessons:</h2>
-          <div v-for="item in cartItems" :key="item.id">
-            <h3>{{ item.subject }}</h3>
-            <p>Price: £{{ item.price }}</p>
-            <p>Quantity: {{ item.quantity }}</p>
-            <button @click="removeItemFromCart(item.id)">
-              <i class="fa-solid fa-trash-can"></i> Remove
-            </button>
-          </div>
-
-          <!-- Order Summary -->
-          <div class="order-summary">
-            <h2>Order Summary</h2>
-            <p>Total Lessons: {{ totalItems }}</p>
-            <p>Total Price: £{{ totalPrice }}</p>
-          </div>
-
-          <!-- Checkout Form -->
-          <checkout-form
-            v-if="!orderSubmitted"
-            :can-submit="canSubmitOrder"
-            v-model:name="customerName"
-            v-model:phone="customerPhone"
-            @submit="submitOrder"
-          ></checkout-form>
-
-          <!-- Order Receipt -->
-          <div v-if="orderSubmitted" class="receipt">
-            <h2>Order Confirmation</h2>
-            <p><strong>Name:</strong> {{ customerName }}</p>
-            <p><strong>Phone:</strong> {{ customerPhone }}</p>
-            <h3>Lessons Booked:</h3>
-            <div v-for="item in cartItems" :key="item.id">
-              <p>{{ item.quantity }} × {{ item.subject }} - £{{ item.price * item.quantity }}</p>
-            </div>
-            <h3>Total Cost: £{{ totalPrice }}</h3>
-            <p><strong>Order submitted successfully!</strong></p>
-          </div>
-        </div>
-
-        <!-- Empty Cart -->
-        <div v-else>
-          <h2>Your cart is empty</h2>
-          <p>Add some lessons to your cart first!</p>
-        </div>
-
-        <button @click="goBack">
-          <i class="fa-solid fa-arrow-left"></i> Go Back to Lessons
+    <section v-if="showLessons" class="search-section">
+      <div class="search-bar">
+        <i class="fa-solid fa-magnifying-glass"></i>
+        <input 
+          type="text" 
+          v-model="searchQuery" 
+          placeholder="Search lessons by subject, location, price..."
+        >
+        <button 
+          v-if="searchQuery" 
+          @click="clearSearch" 
+          class="clear-search">
+          <i class="fa-solid fa-times"></i>
         </button>
       </div>
+    </section>
+
+
+    <!-- SORTING-->
+
+    <section v-if="showLessons" class="sorting-controls">
+      <label>Sort by:</label>
+      <select v-model="sortBy">
+        <option value="subject">Subject</option>
+        <option value="location">Location</option>
+        <option value="price">Price</option>
+        <option value="spaces">Availability</option>
+      </select>
+
+      <label>Order:</label>
+      <select v-model="sortOrder">
+        <option value="asc">Ascending</option>
+        <option value="desc">Descending</option>
+      </select>
+    </section>
+
+
+
+    <!--  SEARCH RESULT COUNT     -->
+  
+    <div v-if="showLessons && searchQuery" class="search-info">
+      <p>Showing {{ filteredLessons.length }} results for "{{ searchQuery }}"</p>
+    </div>
+
+    <!--       LESSONS LIST             -->
+
+    <main v-if="showLessons">
+
+      <figure v-for="lesson in sortedAndFilteredLessons" :key="lesson.id">
+        <img :src="lesson.image" :alt="lesson.subject">
+
+        <h1>{{ lesson.subject }}</h1>
+        <p><strong>Location:</strong> {{ lesson.location }}</p>
+        <p><strong>Price:</strong> £{{ lesson.price }}</p>
+        <p><strong>Spaces Available:</strong> {{ lesson.spaces }}</p>
+
+        <!-- Add to cart -->
+        <button v-if="canAddToCart(lesson.id)" @click="addItemToCart(lesson.id)">
+          <i class="fa-solid fa-cart-plus"></i> Add to Cart
+        </button>
+
+        <button v-else disabled>
+          <i class="fa-solid fa-ban"></i> Add to Cart
+        </button>
+
+        <!-- Remove from cart -->
+        <button 
+          @click="removeItemFromCart(lesson.id)"
+          :disabled="!canRemoveFromCart(lesson.id)"
+        >
+          <i class="fa-solid fa-trash-can"></i> Remove from Cart
+        </button>
+
+        <div v-if="!canAddToCart(lesson.id) && cart.length > 0">
+          No more spaces available for this lesson
+        </div>
+      </figure>
+
     </main>
+
+
+    <!--         CHECKOUT PAGE          -->
+
+    <main v-else>
+      <h1>Checkout</h1>
+
+      <!-- If cart not empty -->
+      <div v-if="cartItems.length > 0">
+        <h2>Your Selected Lessons:</h2>
+
+        <div v-for="item in cartItems" :key="item.id">
+          <h3>{{ item.subject }}</h3>
+          <p>Price: £{{ item.price }}</p>
+          <p>Quantity: {{ item.quantity }}</p>
+
+          <button @click="removeItemFromCart(item.id)">
+            <i class="fa-solid fa-trash-can"></i> Remove
+          </button>
+        </div>
+
+        <!-- Order Summary -->
+        <div class="order-summary">
+          <h2>Order Summary</h2>
+          <p>Total Lessons: {{ totalItems }}</p>
+          <p>Total Price: £{{ totalPrice }}</p>
+        </div>
+
+        <!-- Checkout Form -->
+        <checkout-form
+          v-if="!orderSubmitted"
+          :can-submit="canSubmitOrder"
+          v-model:name="customerName"
+          v-model:phone="customerPhone"
+          @submit="submitOrder"
+        ></checkout-form>
+
+        <!-- Order Receipt -->
+        <div v-if="orderSubmitted" class="receipt">
+          <h2>Order Confirmation</h2>
+          <p><strong>Name:</strong> {{ customerName }}</p>
+          <p><strong>Phone:</strong> {{ customerPhone }}</p>
+
+          <h3>Lessons Booked:</h3>
+          <div v-for="item in cartItems" :key="item.id">
+            <p>{{ item.quantity }} × {{ item.subject }} - £{{ item.price * item.quantity }}</p>
+          </div>
+
+          <h3>Total Cost: £{{ totalPrice }}</h3>
+          <p><strong>Order submitted successfully!</strong></p>
+        </div>
+
+      </div>
+
+      <!-- If cart empty -->
+      <div v-else>
+        <h2>Your cart is empty</h2>
+        <p>Add some lessons to your cart first!</p>
+      </div>
+
+      <button @click="goBack">
+        <i class="fa-solid fa-arrow-left"></i> Go Back to Lessons
+      </button>
+
+    </main>
+
   </div>
+
 <script>
   var app = Vue.createApp({
     components: { 
@@ -223,7 +244,7 @@
         showLessons: true,
         sortBy: 'subject',
         sortOrder: 'asc',
-        customerName: '',
+        customerName: '', 
         customerPhone: '',
         orderSubmitted: false,
         cart: [],
@@ -238,7 +259,10 @@
           { id: 1007, subject: "Computer Science", location: "Watford", price: 120, spaces: 5, image: "../assets/images/compsci.png" },
           { id: 1008, subject: "Art", location: "Hackney", price: 60, spaces: 5, image: "../assets/images/artbook.png" },
           { id: 1009, subject: "Music", location: "Stratford", price: 110, spaces: 5, image: "../assets/images/music.png" },
-          { id: 1010, subject: "Economics", location: "Islington", price: 130, spaces: 5, image: "../assets/images/economicsbook.png" }
+          { id: 1010, subject: "Economics", location: "Islington", price: 130, spaces: 5, image: "../assets/images/economicsbook.png" },
+         
+
+          
         ]
       };
     },
@@ -334,7 +358,7 @@
             orderDate: new Date().toISOString()
           };
 
-          console.log("📦 Sending order data to backend:", orderData);
+          console.log(" Sending order data to backend:", orderData);
 
           fetch("http://localhost:3000/orders", {
             method: "POST",
@@ -342,23 +366,23 @@
             body: JSON.stringify(orderData)
           })
           .then(function(res) {
-            console.log("📨 Response status:", res.status, res.statusText);
+            console.log(" Response status:", res.status, res.statusText);
             return res.json();
           })
           .then(function(data) {
-            console.log("✅ Server response data:", data);
+            console.log(" Server response data:", data);
             if (data.success && data.orderId) {
-              console.log("✅ Order successfully saved in MongoDB (CST3144 → backendlibrary → orders)");
+              console.log(" Order successfully saved in MongoDB (CST3144 → backendlibrary → orders)");
               self.orderSubmitted = true;
               self.cart = [];
               self.customerName = '';
               self.customerPhone = '';
-              alert("✅ Order submitted successfully! It is now stored in the MongoDB 'orders' collection.");
+              alert(" Order submitted successfully! It is now stored in the MongoDB 'orders' collection.");
               self.loadLessonsFromBackend();
             }
           })
           .catch(function(err) {
-            console.error("❌ Error submitting order:", err);
+            console.error(" Error submitting order:", err);
           });
         }
       },
@@ -374,7 +398,7 @@
       clearSearch: function() {
         this.searchQuery = '';
       },
-      // FIXED: Added missing closing brace and properly formatted resetAllSpaces method
+    
       resetAllSpaces: function() {
         var self = this;
         if (confirm("Are you sure you want to reset all lesson spaces to 5?")) {
@@ -387,15 +411,15 @@
           })
           .then(function(data) {
             if (data.success) {
-              alert("✅ All lesson spaces have been reset to 5.");
+              alert("All lesson spaces have been reset to 5.");
               self.loadLessonsFromBackend(); // reload updated data
             } else {
-              alert("⚠️ Failed to reset lessons: " + (data.message || "Unknown error"));
+              alert(" Failed to reset lessons: " + (data.message || "Unknown error"));
             }
           })
           .catch(function(err) {
-            console.error("❌ Error resetting lessons:", err);
-            alert("❌ Error connecting to backend. Please check your server.");
+            console.error("Error resetting lessons:", err);
+            alert(" Error connecting to backend. Please check your server.");
           });
         }
       },
@@ -419,18 +443,18 @@
                   image: localLesson ? localLesson.image : "../assets/images/" + backendLesson.subject.toLowerCase().replace(/\s+/g, '') + ".png"
                 };
               });
-              console.log("✅ Lessons fully synced from backend");
+              console.log(" Lessons fully synced from backend");
             }
           })
           .catch(function(err) {
-            console.log("❌ Error loading from backend, using local data:", err);
+            console.log(" Error loading from backend, using local data:", err);
           });
       }
     },
     mounted: function() {
-      console.log("🚀 Vue app mounted");
-      console.log("📚 Lessons loaded:", this.lessons.length);
-      console.log("🛒 Cart initialized:", this.cart.length);
+      console.log(" Vue app mounted");
+      console.log(" Lessons loaded:", this.lessons.length);
+      console.log(" Cart initialized:", this.cart.length);
       this.loadLessonsFromBackend();
     }
   });

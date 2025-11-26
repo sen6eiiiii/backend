@@ -1,7 +1,7 @@
 // =====================================
 // BACKEND: js/index.js - MongoDB Atlas - CST3144
 // =====================================
-console.log("🚀 Starting Express + MongoDB Atlas server...");
+console.log(" Starting Express + MongoDB Atlas server...");
 
 // Use relative path to demo folder modules
 var express = require("../demo/node_modules/express");
@@ -38,19 +38,19 @@ async function connectDB() {
   try {
     await client.connect();
     db = client.db("backendlibrary");
-    console.log("✅ Connected to MongoDB Atlas Database: backendlibrary");
+    console.log(" Connected to MongoDB Atlas Database: backendlibrary");
 
     // Check available collections
     var collections = await db.listCollections().toArray();
-    console.log("📊 Available collections:", collections.map(function(c) { return c.name; }));
+    console.log(" Available collections:", collections.map(function(c) { return c.name; }));
 
     // Auto-load sample lessons if 'lessons' collection is empty
     var lessonsCollection = db.collection("lessons");
     var lessonCount = await lessonsCollection.countDocuments();
-    console.log("📚 Current lessons count:", lessonCount);
+    console.log(" Current lessons count:", lessonCount);
     
     if (lessonCount === 0) {
-      console.log("➕ No lessons found. Adding sample data...");
+      console.log(" No lessons found. Adding sample data...");
       await addSampleLessons();
     }
 
@@ -58,17 +58,17 @@ async function connectDB() {
     var ordersExists = collections.some(function(c) { return c.name === "orders"; });
     if (!ordersExists) {
       await db.createCollection("orders");
-      console.log("📦 Created 'orders' collection");
+      console.log(" Created 'orders' collection");
     } else {
-      console.log("📦 'orders' collection already exists");
+      console.log("'orders' collection already exists");
     }
 
     // Test orders collection
     var ordersCount = await db.collection("orders").countDocuments();
-    console.log("🛒 Current orders count:", ordersCount);
+    console.log(" Current orders count:", ordersCount);
 
   } catch (error) {
-    console.error("❌ MongoDB Atlas connection error:", error);
+    console.error(" MongoDB Atlas connection error:", error);
   }
 }
 
@@ -88,9 +88,9 @@ async function addSampleLessons() {
       { id: 1010, subject: "Economics", location: "Islington", price: 130, spaces: 5, image: "economicsbook.png" }
     ];
     await db.collection("lessons").insertMany(sampleLessons);
-    console.log("✅ Sample lessons added to MongoDB Atlas database");
+    console.log(" Sample lessons added to MongoDB Atlas database");
   } catch (error) {
-    console.error("❌ Error adding sample lessons:", error);
+    console.error(" Error adding sample lessons:", error);
   }
 }
 
@@ -116,10 +116,10 @@ app.get("/lessons", async function (req, res) {
       return res.status(500).json({ error: "Database not connected" });
     }
     var lessons = await db.collection("lessons").find({}).toArray();
-    console.log("📤 Sent lessons:", lessons.length);
+    console.log(" Sent lessons:", lessons.length);
     res.json(lessons);
   } catch (error) {
-    console.error("❌ Error fetching lessons:", error);
+    console.error(" Error fetching lessons:", error);
     res.status(500).json({ error: "Failed to fetch lessons" });
   }
 });
@@ -134,7 +134,7 @@ app.get("/search", async function (req, res) {
     var query = req.query.q;
     if (!query) return res.status(400).json({ error: "Query required" });
 
-    console.log("🔍 Search query received:", query);
+    console.log(" Search query received:", query);
 
     var lessons = await db.collection("lessons").find({
       $or: [
@@ -145,11 +145,11 @@ app.get("/search", async function (req, res) {
       ]
     }).toArray();
 
-    console.log("🔍 Search results:", lessons.length);
+    console.log(" Search results:", lessons.length);
     res.json(lessons);
 
   } catch (error) {
-    console.error("❌ Search error:", error);
+    console.error(" Search error:", error);
     res.status(500).json({ error: "Search failed" });
   }
 });
@@ -159,15 +159,15 @@ app.post("/orders", async function (req, res) {
   try {
     console.log(" ");
     console.log("=".repeat(50));
-    console.log("🛒 ORDER SUBMISSION RECEIVED");
+    console.log(" ORDER SUBMISSION RECEIVED");
     console.log("=".repeat(50));
     
     if (!db) {
-      console.error("❌ Database not connected");
+      console.error(" Database not connected");
       return res.status(500).json({ success: false, error: "Database not connected" });
     }
 
-    console.log("📦 Request body:", JSON.stringify(req.body, null, 2));
+    console.log(" Request body:", JSON.stringify(req.body, null, 2));
 
     var name = req.body.name;
     var phone = req.body.phone;
@@ -177,17 +177,17 @@ app.post("/orders", async function (req, res) {
 
     // Validation
     if (!name || !phone) {
-      console.error("❌ Missing name or phone");
+      console.error(" Missing name or phone");
       return res.status(400).json({ success: false, error: "Name and phone are required" });
     }
 
     if (!lessonIDs || !Array.isArray(lessonIDs) || lessonIDs.length === 0) {
-      console.error("❌ Invalid lesson IDs:", lessonIDs);
+      console.error(" Invalid lesson IDs:", lessonIDs);
       return res.status(400).json({ success: false, error: "No valid lessons in cart" });
     }
 
-    console.log("✅ Validation passed");
-    console.log("📋 Order details:", {
+    console.log(" Validation passed");
+    console.log(" Order details:", {
       name: name,
       phone: phone,
       lessonIDs: lessonIDs,
@@ -206,18 +206,18 @@ app.post("/orders", async function (req, res) {
       status: "confirmed"
     };
 
-    console.log("💾 Attempting to save order to MongoDB Atlas...");
-    console.log("📄 Order document:", JSON.stringify(order, null, 2));
+    console.log(" Attempting to save order to MongoDB Atlas...");
+    console.log(" Order document:", JSON.stringify(order, null, 2));
 
     // Save to MongoDB Atlas
     var result = await db.collection("orders").insertOne(order);
     
-    console.log("✅ ORDER SAVED SUCCESSFULLY TO MONGODB ATLAS!");
-    console.log("🗂️ MongoDB Insert Result:", result);
-    console.log("🆔 Order ID:", result.insertedId);
+    console.log(" ORDER SAVED SUCCESSFULLY TO MONGODB ATLAS!");
+    console.log(" MongoDB Insert Result:", result);
+    console.log(" Order ID:", result.insertedId);
     
     // Update lesson spaces in MongoDB Atlas
-    console.log("🔄 Updating lesson spaces in database...");
+    console.log(" Updating lesson spaces in database...");
     for (var i = 0; i < lessonIDs.length; i++) {
       var lessonId = lessonIDs[i];
       try {
@@ -230,12 +230,12 @@ app.post("/orders", async function (req, res) {
             { id: lessonId },
             { $inc: { spaces: -1 } }
           );
-          console.log("✅ Updated spaces for lesson:", lesson.subject);
+          console.log(" Updated spaces for lesson:", lesson.subject);
         } else {
-          console.warn("⚠️ Lesson not found with ID:", lessonId);
+          console.warn("Lesson not found with ID:", lessonId);
         }
       } catch (err) {
-        console.warn("⚠️ Failed to update lesson:", lessonId, err);
+        console.warn(" Failed to update lesson:", lessonId, err);
       }
     }
 
@@ -252,7 +252,7 @@ app.post("/orders", async function (req, res) {
 
   } catch (error) {
     console.error(" ");
-    console.error("❌ ORDER SAVE ERROR:");
+    console.error(" ORDER SAVE ERROR:");
     console.error("Error message:", error.message);
     console.error("Error stack:", error.stack);
     console.error(" ");
@@ -272,7 +272,7 @@ app.get("/orders", async function (req, res) {
     }
     
     var orders = await db.collection("orders").find({}).toArray();
-    console.log("📥 Retrieved orders from database:", orders.length);
+    console.log(" Retrieved orders from database:", orders.length);
     
     res.json({ 
       success: true, 
@@ -281,7 +281,7 @@ app.get("/orders", async function (req, res) {
     });
     
   } catch (error) {
-    console.error("❌ Error fetching orders:", error);
+    console.error(" Error fetching orders:", error);
     res.status(500).json({ error: "Failed to fetch orders" });
   }
 });
@@ -320,7 +320,7 @@ app.put("/lessons/:id", async function (req, res) {
       updatedFields: Object.keys(updateData)
     });
   } catch (error) {
-    console.error("❌ Update error:", error);
+    console.error("Update error:", error);
     res.status(500).json({ error: "Failed to update lesson" });
   }
 });
@@ -338,14 +338,14 @@ app.put("/reset-lessons", async function (req, res) {
       { $set: { spaces: 5 } }
     );
 
-    console.log("🔄 Reset all lesson spaces to 5");
+    console.log(" Reset all lesson spaces to 5");
     res.json({ 
       success: true, 
       message: "All lesson spaces reset to 5",
       modifiedCount: result.modifiedCount 
     });
   } catch (error) {
-    console.error("❌ Reset error:", error);
+    console.error("Reset error:", error);
     res.status(500).json({ error: "Failed to reset lessons" });
   }
 });
@@ -371,7 +371,7 @@ app.get("/test", async function (req, res) {
     var ordersCount = await db.collection("orders").countDocuments();
     
     res.json({
-      message: "✅ Backend is working correctly",
+      message: " Backend is working correctly",
       database: "MongoDB Atlas - backendlibrary",
       lessonsCount: lessonsCount,
       ordersCount: ordersCount,
@@ -385,7 +385,7 @@ app.get("/test", async function (req, res) {
 // Default route
 app.get("/", function (req, res) {
   res.json({
-    message: "📚 Express server running successfully",
+    message: " Express server running successfully",
     database: "MongoDB Atlas - backendlibrary",
     collections: ["lessons", "orders"],
     endpoints: {
@@ -407,13 +407,13 @@ var PORT = 3000;
 http.createServer(app).listen(PORT, function () {
   console.log(" ");
   console.log("=".repeat(50));
-  console.log("🚀 SERVER STARTED SUCCESSFULLY");
+  console.log(" SERVER STARTED SUCCESSFULLY");
   console.log("=".repeat(50));
-  console.log("📍 Server URL: http://localhost:" + PORT);
-  console.log("🗄️ Database: MongoDB Atlas - backendlibrary");
-  console.log("📂 Collections: lessons, orders");
+  console.log(" Server URL: http://localhost:" + PORT);
+  console.log(" Database: MongoDB Atlas - backendlibrary");
+  console.log(" Collections: lessons, orders");
   console.log(" ");
-  console.log("🔗 Available Endpoints:");
+  console.log(" Available Endpoints:");
   console.log("   GET  /lessons     - Get all lessons");
   console.log("   GET  /search?q=   - Search lessons");
   console.log("   POST /orders      - Submit new order");
